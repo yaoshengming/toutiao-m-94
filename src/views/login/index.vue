@@ -1,5 +1,9 @@
 <template>
-<div>登录页面</div>
+<div>
+    <div class="container">
+      <van-nav-bar title="登录" left-text="返回"     @click-left="$router.go(-1)"></van-nav-bar>
+    </div>
+  </div>
 </template>
 
 <script>

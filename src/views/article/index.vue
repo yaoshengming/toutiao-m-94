@@ -1,5 +1,9 @@
 <template>
-  <div>文章页面</div>
+ <div>
+    <div class="container">
+      <van-nav-bar title="文章详情" left-text="返回"   @click-left="$router.go(-1)"></van-nav-bar>
+    </div>
+  </div>
 </template>
 
 <script>
