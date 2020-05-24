@@ -9,12 +9,12 @@ const question = () => import('@/views/question')// 按需引入question 二级�
 const video = () => import('@/views/video')// 按需引入video 二级路由
 const user = () => import('@/views/user')// 按需引入user 二级路由
 // 其他一级路由
-const chat = () => import('@views/user/chat')// 小智同学
-const login = () => import('@views/user/login')// 登录
-const profile = () => import('@views/user/profile')// 编辑资料
-const search = () => import('@views/user/search')// 搜索中心
-const searchresult = () => import('@views/user/result')// 搜索结果
-const article = () => import('@views/user/article')// 文章详情
+const chat = () => import('@/views/user/chat')// 小智同学
+const login = () => import('@/views/login')// 登录
+const profile = () => import('@/views/user/profile')// 编辑资料
+const search = () => import('@/views/search')// 搜索中心
+const searchresult = () => import('@/views/search/result')// 搜索结果
+const article = () => import('@/views/article')// 文章详情
 const routes = [
   {
     path: '/',
@@ -54,7 +54,7 @@ const routes = [
     component: searchresult // 一级路由搜索中心
   },
   {
-    path: '/user/article',
+    path: '/article',
     component: article // 一级路由 文章详情
   }
 ]
