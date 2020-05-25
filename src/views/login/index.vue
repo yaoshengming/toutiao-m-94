@@ -75,7 +75,9 @@ export default {
     },
     // 登录校验
     async  login () {
-      if (this.checkMobile() && this.checkCode()) {
+      const Vmobile = this.checkMobile()
+      const Vcode = this.checkCode()
+      if (Vmobile && Vcode) {
         // console.log('校验通过')
         try {
           const result = await login(this.loginFrom)
@@ -90,7 +92,9 @@ export default {
           this.$router.push(redirectUrl || '/')// 短路表达式
         } catch (error) {
           // 提示信息this.$notify是vant组件库中的提示信息 duration时间弹出设置
-          this.$notify({ message: '用户名或者验证码错误', duration: 800 })
+          // this.$notify({ message: '用户名或者验证码错误', duration: 800 })
+          // 封装了小函数在plugin.js中 调用 duration还是可以修改会覆盖小函数的值不受影响
+          this.$ynotify({ message: '用户名或者验证码错误' })
         }
       }
     }
