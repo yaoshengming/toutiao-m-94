@@ -3,7 +3,7 @@
     <!--vant导航栏van-nav-bar fixed固定在顶部 @click-right点击事件-->
     <van-nav-bar   @click-right="$router.push('/search')"  v-if="$route.path!=='/user'" fixed title="顶呱呱头条" right-text="搜索"></van-nav-bar>
     <!-- 二级路由容器 -->
-    <div :class="{noTop:$route.path==='/user'}">
+    <div  class="my-wrapper"  :class="{noTop:$route.path==='/user'}">
       <router-view></router-view>
     </div>
     <!-- 标签栏组件 route表示开启路由模式-->
