@@ -65,6 +65,7 @@ export default {
     //   上拉加载
     async onLoad () {
       console.log('开始加载文章列表数据')
+      await this.$sleep()
       // van-list组件如果不加干涉 初始化完毕 就会检测 自己距离底部的长度,如果超过了限定 ,就会执行 load事件自动把 绑定的 loading 变成true
       // 设置setTimeout 为了手动关闭加载
       //   setTimeout(() => {
@@ -97,6 +98,7 @@ export default {
     },
     // 下拉刷新
     async  onRefresh () {
+      await this.$sleep()
       const data = await getArticles({ channel_id: this.channel_id, timestamp: Date.now() })// 时间戳一直是最新的数据
       this.isLoading = false// 手动关闭下拉刷新的状态
       if (data.results.length) {
