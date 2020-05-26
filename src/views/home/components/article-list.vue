@@ -8,8 +8,33 @@
     <van-pull-refresh v-model="isLoading" :success-text="successText" @refresh="onRefresh">
       <van-list v-model="upLoading" :finished="finished" finished-text="我是有底线的" @load="onLoad">
         <van-cell-group>
-          <!-- 循环内容 -->
-          <van-cell title="你好" :value="`好`+item" v-for="item in article" :key="item"></van-cell>
+          <!-- 循环内容 title="你好" :value="`好`+item"-->
+          <van-cell v-for="item in article" :key="item">
+            <!-- 列表文章布局 -->
+             <!-- 标题 -->
+            <div class="article_item">
+              <h3 class="van-ellipsis">PullRefresh下拉刷新PullRefresh下拉刷新下拉刷新下拉刷新</h3>
+              <!-- 三图模式 -->
+              <div class="img_box">
+                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+              </div>
+              <!-- 单图模式 -->
+              <!-- <div class="img_box">
+      <van-image class="w100" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg"/>
+              </div>-->
+              <!-- 作者 -->
+              <div class="info_box">
+                <span>你像一阵风</span>
+                <span>8评论</span>
+                <span>10分钟前</span>
+                <span class="close">
+                  <van-icon name="cross"></van-icon>
+                </span>
+              </div>
+            </div>
+          </van-cell>
         </van-cell-group>
       </van-list>
     </van-pull-refresh>
@@ -30,7 +55,7 @@ export default {
   methods: {
     //   上拉加载
     onLoad () {
-    //   console.log('开始加载数据')
+      //   console.log('开始加载数据')
       // van-list组件如果不加干涉 初始化完毕 就会检测 自己距离底部的长度,如果超过了限定 ,就会执行 load事件自动把 绑定的 loading 变成true
       // 设置setTimeout 为了手动关闭加载
       //   setTimeout(() => {
@@ -50,7 +75,10 @@ export default {
     // 下拉刷新
     onRefresh () {
       setTimeout(() => {
-        const arr = Array.from(Array(2), (value, index) => '追加' + (index + 1))
+        const arr = Array.from(
+          Array(2),
+          (value, index) => '追加' + (index + 1)
+        )
         this.article.unshift(...arr)
         this.isLoading = false
         this.successText = `更新了${arr.length}条数据`
@@ -60,5 +88,45 @@ export default {
 }
 </script>
 
-<style>
+<style  lang="less"  scoped>
+.article_item {
+  h3 {
+    font-weight: normal;
+    line-height: 2;
+  }
+  .img_box {
+    display: flex;
+    justify-content: space-between;
+    .w33 {
+      width: 33%;
+      height: 90px;
+    }
+    .w100 {
+      width: 100%;
+      height: 180px;
+    }
+  }
+  .info_box {
+    color: #999;
+    line-height: 2;
+    position: relative;
+    font-size: 12px;
+    span {
+      padding-right: 10px;
+      &.close {
+        border: 1px solid #ddd;
+        border-radius: 2px;
+        line-height: 15px;
+        height: 12px;
+        width: 16px;
+        text-align: center;
+        padding-right: 0;
+        font-size: 8px;
+        position: absolute;
+        right: 0;
+        top: 7px;
+      }
+    }
+  }
+}
 </style>
