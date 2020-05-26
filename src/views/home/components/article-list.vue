@@ -9,9 +9,9 @@
       <van-list v-model="upLoading" :finished="finished" finished-text="我是有底线的" @load="onLoad">
         <van-cell-group>
           <!-- 循环内容 title="你好" :value="`好`+item"-->
-          <van-cell v-for="item in article" :key="item">
+          <van-cell v-for="item in article" :key="item.art_id">
             <!-- 列表文章布局 -->
-             <!-- 标题 -->
+            <!-- 标题 -->
             <div class="article_item">
               <h3 class="van-ellipsis">PullRefresh下拉刷新PullRefresh下拉刷新下拉刷新下拉刷新</h3>
               <!-- 三图模式 -->
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { getArticles } from '@/api/articles'
 export default {
   data () {
     return {
@@ -49,27 +50,46 @@ export default {
       isLoading: false, // 下拉刷新状态 表示是否正在下拉刷新
       upLoading: false, // 表示是否开启了上拉加载 默认值false
       finished: false, // 表示是否已经完成所有数据的加载
-      article: [] // 文章列表
+      article: [], // 文章列表
+      timestamp: null// 事件戳
+    }
+  },
+  props: {
+    channel_id: {
+      required: true, // true必传值
+      type: Number, // 传入的props类型
+      default: null// 没有传入props时  默认
     }
   },
   methods: {
     //   上拉加载
-    onLoad () {
-      //   console.log('开始加载数据')
+    async  onLoad () {
+      console.log('开始加载文章列表数据')
       // van-list组件如果不加干涉 初始化完毕 就会检测 自己距离底部的长度,如果超过了限定 ,就会执行 load事件自动把 绑定的 loading 变成true
       // 设置setTimeout 为了手动关闭加载
       //   setTimeout(() => {
       //     this.finished = true// 表示数据已经全部加载完毕 没有数据 所以执行一秒钟关闭上拉加载
       //   }, 1000)
-      if (this.article.length > 50) {
-        this.finished = true // 没有数据了  就不加载了
+      // if (this.article.length > 50) {
+      //   this.finished = true // 没有数据了  就不加载了
+      // } else {
+      //   const arr = Array.from(
+      //     Array(15),
+      //     (value, index) => this.article.length + index + 1
+      //   )
+      //   this.article.push(...arr) // 上拉加载  不是覆盖之前的数据 应该把数据追加到数组的队尾
+      //   this.upLoading = false // 添加完数据  手动关闭
+      // }
+      // this.timestamp || Date.now()  如果有历史时间戳 用历史时间戳 否则用当前的时间戳
+      const data = await getArticles({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
+      this.article.push(data.results)// 将数据追加到队尾
+      this.upLoading = false// 关闭加载状态
+      if (data.pre_timestamp) {
+        // 将历史时间戳给timestamp但是赋值之前有个判断 需要判断一个历史时间是否为0
+        // 如果有历史时间戳为0 说明此时已经没有数据了 应该宣布结束finished true
+        this.timestamp = data.pre_timestamp// 如果有历史时间戳 表示还有数据可以继续进行加载
       } else {
-        const arr = Array.from(
-          Array(15),
-          (value, index) => this.article.length + index + 1
-        )
-        this.article.push(...arr) // 上拉加载  不是覆盖之前的数据 应该把数据追加到数组的队尾
-        this.upLoading = false // 添加完数据  手动关闭
+        this.finished = true// 表示没有数据可以继续加载
       }
     },
     // 下拉刷新

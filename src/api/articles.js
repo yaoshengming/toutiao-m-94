@@ -1,5 +1,5 @@
 // 专门处理文章模块的请求列表
-import request from '@/utils/articles'
+import request from '@/utils/request'
 // 获取文章推荐数据
 export function getArticles (params) {
   return request({
