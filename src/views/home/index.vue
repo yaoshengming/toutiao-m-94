@@ -7,7 +7,7 @@
             <van-cell  title="标题" value="内容" v-for="item in 20" :key="item" ></van-cell>
           </van-cell-group> -->
         <!-- </div> -->
-         <ArticleList :channel_id="item.id"></ArticleList>
+         <ArticleList  @showMoreAction="openMoreAction"   :channel_id="item.id"></ArticleList>
       </van-tab>
     </van-tabs>
       <!-- 在tabs下放置图标  编辑频道的图标 -->
@@ -15,6 +15,10 @@
         <!-- 放入图标 vant图标 -->
          <van-icon name='wap-nav'></van-icon>
       </span>
+      <!-- 弹层组件 -->
+      <van-popup   :style="{ width: '80%' }" v-model="showMoreAction">
+      <more-action ></more-action>
+    </van-popup>
   </div>
 </template>
 
@@ -22,17 +26,26 @@
 // @ is an alias to /src
 import ArticleList from './components/article-list'
 import { getMyChannels } from '@/api/channels'
+import MoreAction from './components/more-action'// 在父组件引入MoreAction
 export default {
   name: 'Home',
   components: {
-    ArticleList
+    ArticleList,
+    MoreAction
   },
   data () {
     return {
-      channels: []// 接收频道数据
+      channels: [], // 接收频道数据
+      showMoreAction: false, // 是否显示弹层 当点击时才要显示所以默认为false
+      articleId: null// 文章id
     }
   },
   methods: {
+    // artId接收文章id
+    openMoreAction (artId) {
+      this.showMoreAction = true
+      this.articleId = artId
+    },
     async getMyChannels () {
       const data = await getMyChannels()// 接收返回的数据结果
       this.channels = data.channels// 将数据赋值给data中的数据

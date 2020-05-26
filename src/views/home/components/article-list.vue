@@ -14,14 +14,14 @@
             <!-- 标题 -->
             <div class="article_item">
               <h3 class="van-ellipsis">{{item.title}}</h3>
-              <!-- 三图模式 -->
+              <!-- 三图模式 lazy-load懒加载-->
               <div class="img_box" v-if="item.cover.type===3">
-                <van-image lazy-load   class="w33" fit="cover" :src="item.cover.images[0]" />
-                <van-image  lazy-load  class="w33" fit="cover" :src="item.cover.images[1]" />
-                <van-image lazy-load  class="w33" fit="cover" :src="item.cover.images[2]" />
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[0]" />
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[1]" />
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[2]" />
               </div>
               <!-- 单图模式 -->
-              <div class="img_box"  v-if="item.cover.type===1" >
+              <div class="img_box" v-if="item.cover.type===1">
                 <van-image class="w100" fit="cover" :src="item.cover.images[0]" />
               </div>
               <!-- 作者 -->
@@ -29,7 +29,8 @@
                 <span>{{item.aut_name}}</span>
                 <span>{{item.comm_count}}</span>
                 <span>{{item.pubdate | relTime}}</span>
-                <span class="close">
+                <!-- 小叉号显示弹层 用户登录才显示小叉号  item.art_id.toString()传入文章id-->
+                <span class="close" @click="$emit('showMoreAction',item.art_id.toString())" v-if="$store.state.user.token" >
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>
@@ -97,16 +98,19 @@ export default {
       }
     },
     // 下拉刷新
-    async  onRefresh () {
+    async onRefresh () {
       await this.$sleep()
-      const data = await getArticles({ channel_id: this.channel_id, timestamp: Date.now() })// 时间戳一直是最新的数据
-      this.isLoading = false// 手动关闭下拉刷新的状态
+      const data = await getArticles({
+        channel_id: this.channel_id,
+        timestamp: Date.now()
+      }) // 时间戳一直是最新的数据
+      this.isLoading = false // 手动关闭下拉刷新的状态
       if (data.results.length) {
-        this.article = data.results// 历史数据全部被覆盖
+        this.article = data.results // 历史数据全部被覆盖
         if (data.pre_timestamp) {
           // 此时你 已经之前的全部数据覆盖了 假如 你之前把数据拉到了低端 也就意味着 你之前的finished已经为true了
-          this.finished = false// 下拉加载 换来新数据 里面又有历史时间戳 需要重新唤醒列表 让列表可以继续上拉加载
-          this.timestamp = data.pre_timestamp// 记录历史时间戳
+          this.finished = false // 下拉加载 换来新数据 里面又有历史时间戳 需要重新唤醒列表 让列表可以继续上拉加载
+          this.timestamp = data.pre_timestamp // 记录历史时间戳
         }
         this.successText = `更新了${data.results.length}条数据`
       } else {
