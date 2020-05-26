@@ -96,16 +96,30 @@ export default {
       }
     },
     // 下拉刷新
-    onRefresh () {
-      setTimeout(() => {
-        const arr = Array.from(
-          Array(2),
-          (value, index) => '追加' + (index + 1)
-        )
-        this.article.unshift(...arr)
-        this.isLoading = false
-        this.successText = `更新了${arr.length}条数据`
-      }, 1000)
+    async  onRefresh () {
+      const data = await getArticles({ channel_id: this.channel_id, timestamp: Date.now() })// 时间戳一直是最新的数据
+      this.isLoading = false// 手动关闭下拉刷新的状态
+      if (data.results.length) {
+        this.article = data.results// 历史数据全部被覆盖
+        if (data.pre_timestamp) {
+          // 此时你 已经之前的全部数据覆盖了 假如 你之前把数据拉到了低端 也就意味着 你之前的finished已经为true了
+          this.finished = false// 下拉加载 换来新数据 里面又有历史时间戳 需要重新唤醒列表 让列表可以继续上拉加载
+          this.timestamp = data.pre_timestamp// 记录历史时间戳
+        }
+        this.successText = `更新了${data.results.length}条数据`
+      } else {
+        // 如果没有新数据
+        this.successText = '当前已经是最新了'
+      }
+      // setTimeout(() => {
+      //   const arr = Array.from(
+      //     Array(2),
+      //     (value, index) => '追加' + (index + 1)
+      //   )
+      //   this.article.unshift(...arr)
+      //   this.isLoading = false
+      //   this.successText = `更新了${arr.length}条数据`
+      // }, 1000)
     }
   }
 }
