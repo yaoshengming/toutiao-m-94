@@ -12,7 +12,8 @@
       <van-grid class="van-hairline--left">
         <!-- 循环渲染我的频道 -->
         <van-grid-item v-for="(item,index) in channels" :key="item.id">
-          <span class="f12">{{item.name}}</span>
+          <!-- @click="'selectchannels',index"点击我的频道 进入到对应标签频道 -->
+          <span  @click="$emit('selectchannels',index)"  class="f12">{{item.name}}</span>
           <!-- 叉号标签应该在进入编辑状态时显示 应该在退出状态后不显示-->
           <!-- 推荐永远不显示叉号 -->
           <van-icon  v-if="index!==0 && editing" class="btn" name="cross"></van-icon>

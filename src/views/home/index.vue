@@ -24,7 +24,7 @@
     <!-- 频道编辑组件 放在弹出面板的组件 -->
     <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
       <!-- 放置频道编辑组件 -->
-      <ChannelEdit :channels="channels"></ChannelEdit>
+      <ChannelEdit   @selectchannels="selectchannels"   :channels="channels"></ChannelEdit>
     </van-action-sheet>
   </div>
 </template>
@@ -54,6 +54,11 @@ export default {
     }
   },
   methods: {
+    // 点击我的频道跳转到对应标签频道
+    selectchannels (index) {
+      this.activeIndex = index// 将对应频道的索引 设置给当前激活的标签
+      this.showChannelEdit = false// 关闭弹层
+    },
     // artId接收文章id
     openMoreAction (artId) {
       this.showMoreAction = true
