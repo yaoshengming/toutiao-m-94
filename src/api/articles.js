@@ -7,3 +7,11 @@ export function getArticles (params) {
     params: { with_top: 1, ...params }
   })
 }
+// 不感兴趣文章
+export function dislike (data) {
+  return request({
+    url: '/article/dislikes',
+    method: 'post',
+    data
+  })
+}

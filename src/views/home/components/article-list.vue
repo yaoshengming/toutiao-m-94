@@ -44,7 +44,27 @@
 
 <script>
 import { getArticles } from '@/api/articles'
+import eventbus from '@/utils/eventbus'// 不感兴趣 删除对应文章 先引入eventbus
 export default {
+  // 不感兴趣 监听删除文章事件
+  // 初始化函数 传递两个参数文章id和频道id artId, channelId
+  created () {
+    eventbus.$on('delArticle', (artId, channelId) => {
+      // eventbus.$on会触发所有实例所以 进行 判断传递过来的频道是否等于自身频道
+      if (channelId === this.channel_id) {
+        // 先找到频道id对应的索引
+        const index = this.article.findIndex(item => item.art_id.toString() === artId)
+        if (index > -1) {
+          this.article.splice(index, 1)// 删除对应下标的数据
+        }
+        // 可是你一直删除 会将数据都删光 就不会触发load事件
+        // 需要手动触发onload 给页面加载数据
+        if (this.article.length === 0) {
+        }
+        this.onLoad()
+      }
+    })
+  },
   data () {
     return {
       successText: '', // 刷新成功的文本
