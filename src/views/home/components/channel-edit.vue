@@ -23,8 +23,8 @@
     <div class="channel">
       <div class="tit">可选频道：</div>
       <van-grid class="van-hairline--left">
-        <van-grid-item v-for="index in 8" :key="index">
-          <span class="f12">频道{{index}}</span>
+        <van-grid-item v-for="item in optionalChannels" :key="item.id">
+          <span class="f12">{{item.name}}</span>
           <van-icon class="btn" name="plus"></van-icon>
         </van-grid-item>
       </van-grid>
@@ -33,10 +33,12 @@
 </template>
 
 <script>
+import { getAllChannels } from '@/api/channels'
 export default {
   data () {
     return {
-      editing: false// 控制删除图标显示隐藏
+      editing: false, // 控制删除图标显示隐藏
+      allChannels: []// 定义一个变量接收全部的频道数据
     }
   },
   // props: ['channels']// 接收频道数据
@@ -46,6 +48,24 @@ export default {
       tpye: Array, // 数组类型
       default: () => []// 默认值给一格空数组 此函数默认返回一个空数组
     }
+  },
+  methods: {
+    async  getAllChannels () {
+      const data = await getAllChannels()
+      this.allChannels = data.channels
+    }
+  },
+  // 渲染可选频道 可选频道=全部频道-我的频道
+  // 计算属性  因为可选频道是一个动态结果 全部数据（data)-用户频道（props)=>重新计算频道数据=》缓存
+  computed: {
+    // 可选频道 计算属性必须要求有返回值
+    optionalChannels () {
+      // 全部频道-我的频道
+      return this.allChannels.filter(item => !this.channels.some(o => o.id === item.id))
+    }
+  },
+  created () {
+    this.getAllChannels()// 调用的方法是methods中的方法
   }
 }
 </script>
