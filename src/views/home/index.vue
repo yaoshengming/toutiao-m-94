@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 不感兴趣 找到文章对应频道 -->
-    <van-tabs  v-model="activeIndex">
+    <van-tabs v-model="activeIndex">
       <van-tab :title="item.name" v-for="item in channels" :key="item.id">
         <!-- <div class="scroll-wrapper"> -->
         <!-- <van-cell-group >
@@ -12,15 +12,20 @@
       </van-tab>
     </van-tabs>
     <!-- 在tabs下放置图标  编辑频道的图标 -->
-    <span class="bar_btn">
+    <span class="bar_btn" @click="showChannelEdit= true">
       <!-- 放入图标 vant图标 -->
       <van-icon name="wap-nav"></van-icon>
     </span>
     <!-- 弹层组件 -->
     <van-popup :style="{ width: '80%' }" v-model="showMoreAction">
       <!-- 更多操作 不感兴趣 父组件监听来自home/components/more-action 中不感兴趣模块-->
-      <more-action @dislike="dislikeA"></more-action>
+      <MoreAction @reportArticle="reportArticle" @dislike="dislikeA"></MoreAction>
     </van-popup>
+    <!-- 频道编辑组件 放在弹出面板的组件 -->
+    <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
+      <!-- 放置频道编辑组件 -->
+      <ChannelEdit :channels="channels"></ChannelEdit>
+    </van-action-sheet>
   </div>
 </template>
 
@@ -29,20 +34,23 @@
 import ArticleList from './components/article-list'
 import { getMyChannels } from '@/api/channels'
 import MoreAction from './components/more-action' // 在父组件引入MoreAction
-import { dislike } from '@/api/articles'
+import { dislike, reportArticle } from '@/api/articles'
 import eventbus from '@/utils/eventbus'
+import ChannelEdit from './components/channel-edit' // 引入编辑频道组件
 export default {
   name: 'Home',
   components: {
     ArticleList,
-    MoreAction
+    MoreAction,
+    ChannelEdit
   },
   data () {
     return {
       channels: [], // 接收频道数据
       showMoreAction: false, // 是否显示弹层 当点击时才要显示所以默认为false
       articleId: null, // 文章id
-      activeIndex: 0// 不感兴趣 文章对应频道 默认为0
+      activeIndex: 0, // 不感兴趣 文章对应频道 默认为0
+      showChannelEdit: false// 频道编辑 默认隐藏
     }
   },
   methods: {
@@ -55,6 +63,7 @@ export default {
       const data = await getMyChannels() // 接收返回的数据结果
       this.channels = data.channels // 将数据赋值给data中的数据
     },
+    // 不感兴趣
     async dislikeA () {
       try {
         await dislike({
@@ -68,8 +77,35 @@ export default {
         // 应该触发一个事件  利用事件广播的机制 通知对应的tab 来删除文章
         // 然后跳转到子组件home/components/article-list进行监听
         // this.channels[this.activeIndex].id就是对应频道的id
-        eventbus.$emit('delArticle', this.articleId, this.channels[this.activeIndex].id)
-        this.showMoreAction = false// 点击不感兴趣后自动关闭弹层
+        eventbus.$emit(
+          'delArticle',
+          this.articleId,
+          this.channels[this.activeIndex].id
+        )
+        this.showMoreAction = false // 点击不感兴趣后自动关闭弹层
+      } catch (error) {
+        this.$ynotify({
+          message: '操作失败'
+        })
+      }
+    },
+    // 举报文章
+    async reportArticle (type) {
+      try {
+        await reportArticle({
+          target: this.articleId,
+          type
+        })
+        this.$ynotify({
+          type: 'success',
+          message: '操作成功'
+        })
+        eventbus.$emit(
+          'delArticle',
+          this.articleId,
+          this.channels[this.activeIndex].id
+        )
+        this.showMoreAction = false // 点击不感兴趣后自动关闭弹层
       } catch (error) {
         this.$ynotify({
           message: '操作失败'
@@ -84,6 +120,18 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+// 编辑频道面板的样式
+.van-action-sheet {
+  max-height: 100%;
+  height: 100%;
+  .van-action-sheet__header {
+    background: #3296fa;
+    color: #fff;
+    .van-icon-close {
+      color: #fff;
+    }
+  }
+}
 .van-tabs {
   height: 100%;
   display: flex;

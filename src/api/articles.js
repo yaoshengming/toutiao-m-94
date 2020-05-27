@@ -15,3 +15,11 @@ export function dislike (data) {
     data
   })
 }
+// 封装举报文章接口
+export function reportArticle (data) {
+  return request({
+    url: '/article/reports',
+    method: 'post',
+    data
+  })
+}
