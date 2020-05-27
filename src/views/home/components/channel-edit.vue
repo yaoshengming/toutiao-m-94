@@ -13,7 +13,7 @@
         <!-- 循环渲染我的频道 -->
         <van-grid-item v-for="(item,index) in channels" :key="item.id">
           <!-- @click="'selectchannels',index"点击我的频道 进入到对应标签频道 -->
-          <span  @click="$emit('selectchannels',index)"  class="f12">{{item.name}}</span>
+          <span :class="{red: index === activeIndex}" @click="$emit('selectchannels',index)"  class="f12">{{item.name}}</span>
           <!-- 叉号标签应该在进入编辑状态时显示 应该在退出状态后不显示-->
           <!-- 推荐永远不显示叉号 -->
           <van-icon  v-if="index!==0 && editing" class="btn" name="cross"></van-icon>
@@ -25,7 +25,8 @@
       <div class="tit">可选频道：</div>
       <van-grid class="van-hairline--left">
         <van-grid-item v-for="item in optionalChannels" :key="item.id">
-          <span class="f12">{{item.name}}</span>
+          <!-- :class="{red:i===activeIndex}"加一个激活的样式 点击我的频道中的某个频道会显示  -->
+          <span  class="f12">{{item.name}}</span>
           <van-icon class="btn" name="plus"></van-icon>
         </van-grid-item>
       </van-grid>
@@ -48,6 +49,12 @@ export default {
       required: true, // 必须传递
       tpye: Array, // 数组类型
       default: () => []// 默认值给一格空数组 此函数默认返回一个空数组
+    },
+    // 先在index.vue中绑定了此方法  props接收  点击我的频道会显示
+    activeIndex: {
+      requred: true, // 表示必须传递channels requred根据业务需求
+      type: Number, // 指定type是number类型
+      default: 0
     }
   },
   methods: {

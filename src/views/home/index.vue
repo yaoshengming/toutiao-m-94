@@ -24,7 +24,8 @@
     <!-- 频道编辑组件 放在弹出面板的组件 -->
     <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
       <!-- 放置频道编辑组件 -->
-      <ChannelEdit   @selectchannels="selectchannels"   :channels="channels"></ChannelEdit>
+       <!-- :activeIndex="activeIndex"传值 这是做点击我的频道会显示点击的是这个频道 -->
+      <ChannelEdit :activeIndex="activeIndex"  @selectchannels="selectchannels"   :channels="channels"></ChannelEdit>
     </van-action-sheet>
   </div>
 </template>
