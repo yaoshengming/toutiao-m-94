@@ -30,6 +30,7 @@
         :activeIndex="activeIndex"
         @selectchannels="selectchannels"
         :channels="channels"
+        @addChannel="addChannel"
       ></ChannelEdit>
     </van-action-sheet>
   </div>
@@ -38,7 +39,7 @@
 <script>
 // @ is an alias to /src
 import ArticleList from './components/article-list'
-import { getMyChannels, delChannels } from '@/api/channels'
+import { getMyChannels, delChannels, AddMychannels } from '@/api/channels'
 import MoreAction from './components/more-action' // 在父组件引入MoreAction
 import { dislike, reportArticle } from '@/api/articles'
 import eventbus from '@/utils/eventbus'
@@ -60,6 +61,11 @@ export default {
     }
   },
   methods: {
+    // 点击加号 增加我的频道
+    async addChannel (channel) {
+      await AddMychannels(channel)
+      this.channels.push(channel)// 自身加一个频道 影响子组件
+    },
     // 点击叉号 删除我的频道
     async  del (id) {
       // 调用delChannels方法

@@ -16,7 +16,7 @@
           <span :class="{red: index === activeIndex}" @click="$emit('selectchannels',index)"  class="f12">{{item.name}}</span>
           <!-- 叉号标签应该在进入编辑状态时显示 应该在退出状态后不显示-->
           <!-- 推荐永远不显示叉号 -->
-          <van-icon   @click="$emit('del',item.id)"  v-if="index!==0 && editing" class="btn" name="cross"></van-icon>
+          <van-icon  @click="$emit('del',item.id)"  v-if="index!==0 && editing" class="btn" name="cross"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
@@ -27,7 +27,7 @@
         <van-grid-item v-for="item in optionalChannels" :key="item.id">
           <!-- :class="{red:i===activeIndex}"加一个激活的样式 点击我的频道中的某个频道会显示  -->
           <span  class="f12">{{item.name}}</span>
-          <van-icon class="btn" name="plus"></van-icon>
+          <van-icon  @click="$emit('addChannel', item)" class="btn" name="plus"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
