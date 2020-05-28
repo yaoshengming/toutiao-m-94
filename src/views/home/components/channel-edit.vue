@@ -16,7 +16,7 @@
           <span :class="{red: index === activeIndex}" @click="$emit('selectchannels',index)"  class="f12">{{item.name}}</span>
           <!-- 叉号标签应该在进入编辑状态时显示 应该在退出状态后不显示-->
           <!-- 推荐永远不显示叉号 -->
-          <van-icon  v-if="index!==0 && editing" class="btn" name="cross"></van-icon>
+          <van-icon   @click="$emit('del',item.id)"  v-if="index!==0 && editing" class="btn" name="cross"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>

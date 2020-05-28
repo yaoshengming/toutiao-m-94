@@ -24,8 +24,13 @@
     <!-- 频道编辑组件 放在弹出面板的组件 -->
     <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
       <!-- 放置频道编辑组件 -->
-       <!-- :activeIndex="activeIndex"传值 这是做点击我的频道会显示点击的是这个频道 -->
-      <ChannelEdit :activeIndex="activeIndex"  @selectchannels="selectchannels"   :channels="channels"></ChannelEdit>
+      <!-- :activeIndex="activeIndex"传值 这是做点击我的频道会显示点击的是这个频道 -->
+      <ChannelEdit
+        @del="del"
+        :activeIndex="activeIndex"
+        @selectchannels="selectchannels"
+        :channels="channels"
+      ></ChannelEdit>
     </van-action-sheet>
   </div>
 </template>
@@ -33,7 +38,7 @@
 <script>
 // @ is an alias to /src
 import ArticleList from './components/article-list'
-import { getMyChannels } from '@/api/channels'
+import { getMyChannels, delChannels } from '@/api/channels'
 import MoreAction from './components/more-action' // 在父组件引入MoreAction
 import { dislike, reportArticle } from '@/api/articles'
 import eventbus from '@/utils/eventbus'
@@ -55,6 +60,25 @@ export default {
     }
   },
   methods: {
+    // 点击叉号 删除我的频道
+    async  del (id) {
+      // 调用delChannels方法
+      try {
+        await delChannels(id)// 调用api 此时只是删除了缓存中的数据
+        // 如果此时成功的reslove 我们应该去引出当前data中的数据
+        const index = this.channels.findIndex(item => item.id === id)
+        // 找到对应的索引
+        // 找到对应的索引之后 要根据当前删除的索引 当前激活的索引的关系来决定 当前激活索引是否需要改变
+        if (index <= this.activeIndex) {
+          // 如果你删除的索引 是在当前激活索引之前的  或者等于当前激活索引的
+          // 此时就要把激活索引 给往前挪一位
+          this.activeIndex = this.activeIndex - 1
+        }
+        this.channels.splice(index, 1)// 删除对应的索引频道
+      } catch (error) {
+        this.$ynotify({ message: '删除频道失败' })
+      }
+    },
     // 点击我的频道跳转到对应标签频道
     selectchannels (index) {
       this.activeIndex = index// 将对应频道的索引 设置给当前激活的标签
