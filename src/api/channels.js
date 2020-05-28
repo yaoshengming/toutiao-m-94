@@ -64,3 +64,13 @@ export function getAllChannels () {
     url: '/channels'
   })
 }
+// 添加我的频道api
+export function AddMychannels (channel) {
+  return new Promise(function (resolve, reject) {
+    const key = store.state.user.token ? LOGIN_V : LOGIN_N// 根据key判断
+    const channels = JSON.parse(localStorage.getItem(key))// 转化数组得到缓存中的数据
+    channels.push(channel)// 将添加的频道数据追加到队尾
+    localStorage.setItem(key, JSON.stringify(channels))// 重新写入缓存
+    resolve()// 执行这一步 相当于告诉我们使用promise的方法 执行成功了
+  })
+}

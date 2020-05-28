@@ -31,7 +31,7 @@
                 <span>{{item.pubdate | relTime}}</span>
                 <!-- 小叉号显示弹层 用户登录才显示小叉号  item.art_id.toString()传入文章id-->
                 <span class="close"     @click="$emit('showMoreAction',item.art_id.toString())" v-if="$store.state.user.token" >
-                  <van-icon  @click="$emit('del',item.id)"  name="cross"></van-icon>
+                  <van-icon   name="cross"></van-icon>
                 </span>
               </div>
             </div>
