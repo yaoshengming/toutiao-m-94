@@ -23,3 +23,10 @@ export function reportArticle (data) {
     data
   })
 }
+// 获取联想建议
+export function suggest (params) {
+  return request({
+    url: '/suggestion',
+    params// query参数放置在parmas
+  })
+}
