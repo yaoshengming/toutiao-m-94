@@ -30,3 +30,10 @@ export function suggest (params) {
     params// query参数放置在parmas
   })
 }
+// 搜索文章方法
+export function searchArticle (params) {
+  return request({
+    url: '/search',
+    params// 关键词 及分页信息
+  })
+}
