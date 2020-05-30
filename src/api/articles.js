@@ -44,3 +44,10 @@ export function getArticleInfo (artId) {
 
   })
 }
+// 获取评论 或评论回复
+export function getComments (params) {
+  return request({
+    url: '/comments',
+    params
+  })
+}
