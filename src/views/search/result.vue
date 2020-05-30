@@ -6,21 +6,21 @@
     <!-- 将 导航栏固定在顶部 -->
     <van-nav-bar fixed title="搜索结果" left-arrow @click-left="$router.back()"></van-nav-bar>
     <!-- 防止搜索结果列表 -->
-    <van-list>
+    <van-list v-model="upLoading" @load="onLoad" :finished="finished">
       <van-cell-group>
         <van-cell v-for="item in articles" :key="item.art_id.toString()">
           <div class="article_item">
-            <h3 class="van-ellipsis">{{item.title}}</h3>
-            <div class="img_box" v-if="item.cover.type">
-              <van-image class="w33" fit="cover" :src="item.cover.image[0]" />
-              <van-image class="w33" fit="cover" :src="item.cover.image[1]" />
-              <van-image class="w33" fit="cover" :src="item.cover.image[2]" />
+            <h3 class="van-ellipsis">{{ item.title }}</h3>
+            <div class="img_box" v-if="item.cover.type === 3">
+              <van-image class="w33" fit="cover" :src="item.cover.images[0]" />
+              <van-image class="w33" fit="cover" :src="item.cover.images[1]" />
+              <van-image class="w33" fit="cover" :src="item.cover.images[2]" />
             </div>
             <div class="img_box"  v-if="item.cover.type === 1">
-              <van-image class="w100" fit="cover" :src="item.cover.image[0]" />
+              <van-image class="w100" fit="cover" :src="item.cover.images[0]" />
             </div>
             <div class="info_box">
-              <span>{{item.aut_name}}</span>
+              <span>{{ item.aut_name }}</span>
               <span>{{ item.comm_count }}</span>
               <!-- 用过滤器 来处理相对时间 -->
               <span>{{ item.pubdate | relTime }}</span>
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { Articles } from '@/api/articles'
+import { searchArticle } from '@/api/articles'
 export default {
   data () {
     return {
@@ -51,7 +51,7 @@ export default {
     async   onLoad () {
       // 加载数据
       const { q } = this.$route.query// 获取query参数
-      const data = await Articles.searchArticle({ ...this.page, q })
+      const data = await searchArticle({ ...this.page, q })
       // 得到的结果 应该追加到artciles数据
       this.articles.push(...data.results)// 上拉加载触发时  将数据追到队尾
       // 关闭上拉加载的状态
