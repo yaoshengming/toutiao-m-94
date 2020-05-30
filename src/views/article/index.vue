@@ -113,6 +113,7 @@ export default {
     position: sticky;
     background-color: #fff;
     top: 46px;
+    z-index:2;
     .text {
       flex: 1;
       padding-left: 10px;
