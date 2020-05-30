@@ -10,7 +10,12 @@
             <p class="name">{{article.aut_name}}</p>
             <p class="time">{{article.pubdate | relTime }}</p>
           </div>
-          <van-button  @click="follow()" round size="small" type="info">{{ article.is_followed ? '已关注' : '+ 关注' }}</van-button>
+          <van-button
+            @click="follow()"
+            round
+            size="small"
+            type="info"
+          >{{ article.is_followed ? '已关注' : '+ 关注' }}</van-button>
         </div>
         <!-- v-html="article.content"文章内容 有标签 有属性 有样式 将标签设置到对应的元素中v-html -->
         <div class="content" v-html="article.content"></div>
@@ -30,6 +35,8 @@
             icon="delete"
           >不喜欢</van-button>
         </div>
+        <!-- 放置评论组件 -->
+        <Comment></Comment>
       </div>
     </div>
   </div>
@@ -38,26 +45,30 @@
 <script>
 import { getArticleInfo } from '@/api/articles'
 import { followuser, Nofollow } from '@/api/user'
+import Comment from './components/comment' // 引入评论
 export default {
+  components: {
+    Comment // 注册组件
+  },
   data () {
     return {
-      article: []// 接收文章数据
+      article: [] // 接收文章数据
     }
   },
   methods: {
-  //  关注或取消关注
-    async   follow () {
+    //  关注或取消关注
+    async follow () {
       try {
         if (this.article.is_followed) {
-          await Nofollow(this.article.aut_id)// 传入作者id
+          await Nofollow(this.article.aut_id) // 传入作者id
         } else {
-        // 关注
-          await followuser({ target: this.article.aut_id })// 传入作者id
+          // 关注
+          await followuser({ target: this.article.aut_id }) // 传入作者id
         }
         // 如果成功了
         // PC端 是重新加载
         // 移动端不会重新加载  只会修改对应的数据状态
-        this.article.is_followed = !this.article.is_followed// 将状态改为对立状态
+        this.article.is_followed = !this.article.is_followed // 将状态改为对立状态
       } catch (error) {
         // 失败会进入到catch
         // error.message是报错信息  就可以知道哪里出问题 这个错误是从哪里抛出了的
@@ -66,9 +77,9 @@ export default {
       }
     },
     // 获取文章详情
-    async   getArticleInfo () {
-      const { artId } = this.$route.query// 解构查询id
-      this.article = await getArticleInfo(artId)// 得到文章结果
+    async getArticleInfo () {
+      const { artId } = this.$route.query // 解构查询id
+      this.article = await getArticleInfo(artId) // 得到文章结果
     }
   },
   created () {
