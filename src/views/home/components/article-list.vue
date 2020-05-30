@@ -9,7 +9,8 @@
       <van-list v-model="upLoading" :finished="finished" finished-text="我是有底线的" @load="onLoad">
         <van-cell-group>
           <!-- 循环内容 item.art_id是对象 应该用toString来处理大数字-->
-          <van-cell v-for="item in article" :key="item.art_id.toString()">
+          <!-- 点击文章跳转到文章详情 :to="`/article?artId=${item.art_id.toString()}`"-->
+          <van-cell  :to="`/article?artId=${item.art_id.toString()}`"  v-for="item in article" :key="item.art_id.toString()">
             <!-- 列表文章布局 -->
             <!-- 标题 -->
             <div class="article_item">
@@ -30,7 +31,8 @@
                 <span>{{item.comm_count}}</span>
                 <span>{{item.pubdate | relTime}}</span>
                 <!-- 小叉号显示弹层 用户登录才显示小叉号  item.art_id.toString()传入文章id-->
-                <span class="close"     @click="$emit('showMoreAction',item.art_id.toString())" v-if="$store.state.user.token" >
+                 <!-- @click.stop阻止事件冒泡 -->
+                <span class="close"     @click.stop="$emit('showMoreAction',item.art_id.toString())" v-if="$store.state.user.token" >
                   <van-icon   name="cross"></van-icon>
                 </span>
               </div>
