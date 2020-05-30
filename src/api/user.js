@@ -10,3 +10,19 @@ export function login (data) {
   })
   // 返回一个promise对象
 }
+// 关注用户
+export function followuser (data) {
+  return request({
+    url: '/user/followings',
+    method: 'post',
+    data
+  })
+}
+// 取消关注
+export function Nofollow (autid) {
+  return request({
+    url: `/user/followings/${autid}`,
+    method: 'delete'
+
+  })
+}
