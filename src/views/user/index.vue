@@ -1,8 +1,8 @@
 <template>
- <div class="container">
+  <div class="container">
     <div class="user-profile">
       <div class="info">
-        <van-image round :src="userInfo.photo"  />
+        <van-image round :src="userInfo.photo" />
         <h3 class="name">
           {{userInfo.name}}
           <br />
@@ -40,13 +40,15 @@
       <van-cell icon="edit" title="编辑资料" to="/user/profile" is-link />
       <van-cell icon="chat-o" title="小智同学" to="/user/chat" is-link />
       <van-cell icon="setting-o" title="系统设置" is-link />
-      <van-cell icon="warning-o" title="退出登录" to="/login" is-link />
+      <!-- @click="logOut"退出登录 -->
+      <van-cell icon="warning-o" title="退出登录" @click="logOut" is-link />
     </van-cell-group>
   </div>
 </template>
 
 <script>
 import { getUser } from '@/api/user'
+import { mapMutations } from 'vuex'
 export default {
   data () {
     return {
@@ -54,8 +56,22 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['delUser']),
+    // 自己的信息渲染
     async   getUserInfo () {
       this.userInfo = await getUser()
+    },
+    // 退出登录方法
+    async  logOut () {
+      try {
+        await this.$dialog.confirm({
+          message: '确定要退出登录吗'
+        })
+        // 确定点击了退出
+        this.delUser()// 调用vuex中的清除token方法
+        this.$router.push('./login')
+      } catch (error) {
+      }
     }
   },
   created () {
@@ -76,7 +92,7 @@ export default {
       display: flex;
       padding: 20px;
       align-items: center;
-      .van-image{
+      .van-image {
         width: 64px;
         height: 64px;
       }
@@ -90,7 +106,7 @@ export default {
         color: #3296fa;
       }
     }
-    p{
+    p {
       margin: 0;
       text-align: center;
     }
