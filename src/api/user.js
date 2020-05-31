@@ -26,3 +26,9 @@ export function Nofollow (autid) {
 
   })
 }
+// 获取用户自己信息
+export function getUser () {
+  return request({
+    url: '/user'
+  })
+}
