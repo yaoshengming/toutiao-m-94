@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <van-nav-bar left-arrow @click-left="$router.back()" title="编辑资料" right-text="保存"></van-nav-bar>
+    <van-nav-bar left-arrow @click-left="$router.back()"  @click-right="saveUser"   title="编辑资料" right-text="保存"></van-nav-bar>
     <!-- @click="showPhoto"点击头像 显示头像弹层 -->
     <van-cell-group>
       <van-cell is-link title="头像" center>
@@ -58,7 +58,7 @@
 
 <script>
 import dayjs from 'dayjs'
-import { getUserProfile, updatePhoto } from '@/api/user'
+import { getUserProfile, updatePhoto, saveUser } from '@/api/user'
 export default {
   data () {
     return {
@@ -81,6 +81,15 @@ export default {
     }
   },
   methods: {
+    // 保存用户信息
+    async  saveUser () {
+      try {
+        await saveUser(this.user)// 传入user对象
+        this.$ynotify({ type: 'success', message: '保存成功' })
+      } catch (error) {
+        this.$ynotify({ message: '保存失败' })
+      }
+    },
     // 打开选择相册的对话框 触发点击input:file的动作
     openFileDialog () {
       this.$refs.myFile.click()// 触发input:file的click事件 触发事件就会弹出文件对话框
