@@ -32,3 +32,17 @@ export function getUser () {
     url: '/user'
   })
 }
+// 获取用户的个人资料
+export function getUserProfile () {
+  return request({
+    url: '/user/profile'
+  })
+}
+// 修改用户头像
+export function updatePhoto (data) {
+  return request({
+    url: '/user/photo',
+    method: 'patch',
+    data// body参数
+  })
+}
