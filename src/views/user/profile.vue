@@ -59,6 +59,7 @@
 <script>
 import dayjs from 'dayjs'
 import { getUserProfile, updatePhoto, saveUser } from '@/api/user'
+import { mapMutations } from 'vuex'// 小智同学用户头像
 export default {
   data () {
     return {
@@ -81,6 +82,8 @@ export default {
     }
   },
   methods: {
+    // 小智同学用户头像信息
+    ...mapMutations([' Photo ']), // 引入更新头像的方法
     // 保存用户信息
     async  saveUser () {
       try {
@@ -134,6 +137,8 @@ export default {
       data.append('photo', this.$refs.myFile.files[0])// 第二个参数是选择的图片文件
       const result = await updatePhoto(data)// 上传头像
       this.user.photo = result.photo// 把成功上传的头像地址设置给当前data中的数据
+      // 小智同学 用户修改头像之后 也将修改成功的头像  设置给当前的vuex
+      this.Photo({ photo: result.photo })// 将最新的头像地址设置给vuex
       this.showPhoto = false// 关闭头像弹层
     }
   },
