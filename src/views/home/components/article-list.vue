@@ -1,6 +1,6 @@
 <template>
   <!-- 放置div 是为了阅读记忆 形成滚动条 -->
-  <div class="scroll-wrapper">
+  <div class="scroll-wrapper" @scroll="remember" ref="myScroll">
     <!-- :finished="finished"把属性赋值 -->
     <!-- van-list组件如果不加干涉 初始化完毕 就会检测 自己距离底部的长度,
     如果超过了限定 ,就会执行 load事件  自动把绑定的 loading 变成true-->
@@ -10,7 +10,11 @@
         <van-cell-group>
           <!-- 循环内容 item.art_id是对象 应该用toString来处理大数字-->
           <!-- 点击文章跳转到文章详情 :to="`/article?artId=${item.art_id.toString()}`"-->
-          <van-cell  :to="`/article?artId=${item.art_id.toString()}`"  v-for="item in article" :key="item.art_id.toString()">
+          <van-cell
+            :to="`/article?artId=${item.art_id.toString()}`"
+            v-for="item in article"
+            :key="item.art_id.toString()"
+          >
             <!-- 列表文章布局 -->
             <!-- 标题 -->
             <div class="article_item">
@@ -31,9 +35,13 @@
                 <span>{{item.comm_count}}</span>
                 <span>{{item.pubdate | relTime}}</span>
                 <!-- 小叉号显示弹层 用户登录才显示小叉号  item.art_id.toString()传入文章id-->
-                 <!-- @click.stop阻止事件冒泡 -->
-                <span class="close"     @click.stop="$emit('showMoreAction',item.art_id.toString())" v-if="$store.state.user.token" >
-                  <van-icon   name="cross"></van-icon>
+                <!-- @click.stop阻止事件冒泡 -->
+                <span
+                  class="close"
+                  @click.stop="$emit('showMoreAction',item.art_id.toString())"
+                  v-if="$store.state.user.token"
+                >
+                  <van-icon name="cross"></van-icon>
                 </span>
               </div>
             </div>
@@ -66,6 +74,19 @@ export default {
         this.onLoad()
       }
     })
+    eventbus.$on('changeTab', (id) => {
+      // 传入的id 就是当前被激活的id
+      // 要判断 当前文章列表  接收的id 是否等于此id 如果相等 表示该文章列表实例 就是需要去滚动的实例
+      if (id === this.channel_id) {
+        // 如果相等 表示 我要滚动此滚动条
+        this.$nextTick(() => {
+          if (this.scrollTop && this.$refs.myScroll) {
+          // 当滚动距离不为0   并且滚动元素 存在的情况下 才去滚动
+            this.$refs.myScroll.scrollTop = this.scrollTop// 滚动到固定的位置
+          }
+        })
+      }
+    })
   },
   data () {
     return {
@@ -74,7 +95,8 @@ export default {
       upLoading: false, // 表示是否开启了上拉加载 默认值false
       finished: false, // 表示是否已经完成所有数据的加载
       article: [], // 文章列表
-      timestamp: null // 事件戳
+      timestamp: null, // 事件戳
+      scrollTop: 0// 定义滚动的位置 形成阅读记忆
     }
   },
   props: {
@@ -85,6 +107,15 @@ export default {
     }
   },
   methods: {
+    // 阅读记忆
+    remember (event) {
+      // 函数防抖 在一段时间之内 只执行最后一次事件
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        // 记录当前滚动的位置
+        this.scrollTop = event.target.scrollTop// 记录滚动的位置
+      }, 500)
+    },
     //   上拉加载
     async onLoad () {
       console.log('开始加载文章列表数据')
@@ -148,6 +179,14 @@ export default {
       //   this.isLoading = false
       //   this.successText = `更新了${arr.length}条数据`
       // }, 1000)
+    }
+  },
+  activated () {
+    // 可以在激活函数中 去判断当前是否scrollTop发生了变化
+    if (this.$refs.myScroll && this.scrollTop) {
+      // 判断滚动位置 是否大于0
+      // 将div滚动回原来的位置
+      this.$refs.myScroll.scrollTop = this.scrollTop// 将记录的位置 滚动到对应位置
     }
   }
 }

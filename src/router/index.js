@@ -22,7 +22,8 @@ const routes = [
     component: Layout, // 布局组件 一级路由
     children: [{
       path: '',
-      component: home
+      component: home,
+      meta: { isAlive: true }// 路由元信息
     }, {
       path: '/question',
       component: question// 问答组件

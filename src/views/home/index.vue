@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 不感兴趣 找到文章对应频道 -->
-    <van-tabs v-model="activeIndex">
+    <van-tabs v-model="activeIndex"  @change="changeTab">
       <van-tab :title="item.name" v-for="item in channels" :key="item.id">
         <!-- <div class="scroll-wrapper"> -->
         <!-- <van-cell-group >
@@ -61,6 +61,11 @@ export default {
     }
   },
   methods: {
+    // 切换页签事件
+    changeTab () {
+      // 切换页签时 我要广播一个消息  让对应的页签中的文章列表 去滚动滚动条
+      eventbus.$emit('changeTab', this.channels[this.activeIndex].id)
+    },
     // 点击加号 增加我的频道
     async addChannel (channel) {
       await AddMychannels(channel)
